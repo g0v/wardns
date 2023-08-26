@@ -37,6 +37,14 @@ class SimpleResolver(BaseResolver):
 
         for rdata in answers:
             ip = rdata.address
+            # 104.16.0.0 - 104.31.255.255 是 cloudflare
+            ip_parts = ip.split('.')
+            if ip_parts[0] == '104' and int(ip_parts[1]) in range(16, 32):
+                if self.cache.get(str(qname)):
+                    continue
+                self.cache[str(qname)] = True
+                print("%s is cloudflare" % (qname))
+                continue
             # 透過 geoip 查詢 ip 的地理位置
             try:
                 geoip_result = self.reader.city(ip)
