@@ -9,5 +9,19 @@
 為了要測試，因此建立了「戰時網路模擬器」，這是個 DNS Server ，只要將自己電腦改指到這個 DNS Server ，你就只能連到國內網路
 藉此可以知道還有什麼服務可以用
 
-安裝
-----
+## 安裝
+### 初始化
+- git clone https://github.com/g0v/wardns
+- cd worddns
+- curl https://cdn.jsdelivr.net/npm/geolite2-city@1.0.0/GeoLite2-City.mmdb.gz | gunzip > GeoLite2-City.mmdb
+- python3 -m venv venv
+
+### 啟動 dns server
+- source venv/bin/activate
+- pip3 install -r requirements.txt
+- python3 dnsserver.py
+
+### 把自己的電腦的 DNS 改成 127.0.0.1 測試
+
+## License
+程式碼以 BSDLicense 授權
