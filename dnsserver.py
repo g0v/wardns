@@ -21,7 +21,7 @@ class SimpleResolver(BaseResolver):
         res.nameservers = ['168.95.1.1']
         # 如果查不到 ip 就回傳找不到網域
         try:
-            answers = res.query(str(qname))
+            answers = res.resolve(str(qname))
         except dns.resolver.NoAnswer:
             if self.cache.get(str(qname)):
                 return reply
@@ -85,7 +85,5 @@ if __name__ == '__main__':
     # disable logging
     server = DNSServer(SimpleResolver(), port=53, address='0.0.0.0', logger=DNSLogger(), tcp=False)
     print("Starting DNS server...")
-    server.start_thread()
-    while True:
-        pass
+    server.start()
 
