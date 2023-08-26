@@ -1,0 +1,3 @@
+dnslib
+geoip2
+dnspython
