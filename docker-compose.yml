@@ -1,0 +1,10 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+version: "3.8"
+services:
+  wardns:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: g0v/wardns
+    ports:
+      - 53:53

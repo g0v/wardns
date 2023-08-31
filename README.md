@@ -24,6 +24,13 @@ $ pip3 install -r requirements.txt
 $ python3 dnsserver.py
 ```
 
+### 或使用 docker
+```
+$ git clone https://github.com/g0v/wardns
+$ cd worddns
+$ docker compose up
+```
+
 ### 把自己的電腦的 DNS 改成 127.0.0.1 測試
 
 ## License
