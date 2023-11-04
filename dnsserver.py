@@ -83,7 +83,7 @@ class DNSLogger:
 
 if __name__ == '__main__':
     # disable logging
-    server = DNSServer(SimpleResolver(), port=53, address='0.0.0.0', logger=DNSLogger(), tcp=False)
+    server = DNSServer(SimpleResolver(), port=53, address='127.0.0.1', logger=DNSLogger(), tcp=False)
     print("Starting DNS server...")
     server.start()
 
