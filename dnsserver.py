@@ -5,6 +5,7 @@ import geoip2.database
 import socket
 import dns
 import dns.resolver
+import sys
 
 class SimpleResolver(BaseResolver):
     def __init__(self, *args, **kwargs):
@@ -16,7 +17,7 @@ class SimpleResolver(BaseResolver):
         qname = request.q.qname
         reply = request.reply()
         # 透過 dnslib 查詢 qname 的 ip
-        
+
         res = dns.resolver.Resolver()
         res.nameservers = ['168.95.1.1']
         # 如果查不到 ip 就回傳找不到網域
@@ -54,16 +55,20 @@ class SimpleResolver(BaseResolver):
                 self.cache[str(qname)] = True
                 print("%s(%s) no geoip" % (qname, ip))
                 continue
-            # 如果結果不是 TW ，就回傳找不到網域
-            if geoip_result.country.iso_code != 'TW':
-                if self.cache.get(str(qname)):
+            if verbose_mode:
+                print("%s is in: %s" % (qname, geoip_result.country.iso_code))
+                sys.stdout.flush()
+            else:
+                # 如果結果不是 TW ，就回傳找不到網域
+                if geoip_result.country.iso_code != 'TW':
+                    if self.cache.get(str(qname)):
+                        continue
+                    self.cache[str(qname)] = True
+                    print("%s is not in TW: %s" % (qname, geoip_result.country.iso_code))
                     continue
-                self.cache[str(qname)] = True
-                print("%s is not in TW: %s" % (qname, geoip_result.country.iso_code))
-                continue
-            
+
             reply.add_answer(*RR.fromZone("%s 60 A %s" % (qname, ip)))
-        
+
         return reply
 
 class DNSLogger:
@@ -84,6 +89,16 @@ class DNSLogger:
 if __name__ == '__main__':
     # disable logging
     server = DNSServer(SimpleResolver(), port=53, address='127.0.0.1', logger=DNSLogger(), tcp=False)
+
+    global verbose_mode
+
+    verbose_mode = False
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-verbose":
+            verbose_mode = True
+            print("Running in verbose mode...")
+        else:
+            print("Invalid command-line argument...using defaults...")
+
     print("Starting DNS server...")
     server.start()
-
